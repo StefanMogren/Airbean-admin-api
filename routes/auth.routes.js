@@ -33,16 +33,18 @@ router.get("/logout", async (req, res) => {
 	}
 });
 
+// ---------- SKA UPPDATERAS ----------
 // ----- POST register new user -----
 // Registrerar en ny användare
 router.post("/register", validateBody, validateAuthBody, async (req, res) => {
-	const { username, password } = req.body;
+	const { username, password, role } = req.body;
 
 	// Mongoose använder model/schema för att kontrollera så uppgifterna stämmer.
 	// Skapar därefter den nya användaren ifall allt stämmer.
 	const result = await registerUser({
 		username: username,
 		password: password,
+		role: role,
 		userId: generateUserId(),
 	});
 
