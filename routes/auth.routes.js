@@ -3,6 +3,11 @@ import { Router } from "express";
 
 // Utils Import
 import { generateUserId } from "../utils/idGenerator.util.js";
+import {
+	hashPassword,
+	comparePasswords,
+	signToken,
+} from "../utils/verifier.util.js";
 
 // Middleware Import
 import { validateAuthBody } from "../middlewares/auth.validator.js";
@@ -39,11 +44,13 @@ router.get("/logout", async (req, res) => {
 router.post("/register", validateBody, validateAuthBody, async (req, res) => {
 	const { username, password, role } = req.body;
 
+	const hashedPassword = await hashPassword(password);
+
 	// Mongoose använder model/schema för att kontrollera så uppgifterna stämmer.
 	// Skapar därefter den nya användaren ifall allt stämmer.
 	const result = await registerUser({
 		username: username,
-		password: password,
+		password: hashedPassword,
 		role: role,
 		userId: generateUserId(),
 	});
