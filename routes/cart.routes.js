@@ -12,9 +12,9 @@ import { validateBody } from "../middlewares/body.validator.js";
 
 // Controllers Import
 import {
-    getCart,
-    getCartById,
-    updateCart,
+	getCart,
+	getCartById,
+	updateCart,
 } from "../controllers/cart.controllers.js";
 
 // Config

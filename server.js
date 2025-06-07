@@ -37,7 +37,7 @@ app.use("/api/orders", ordersRouter);
 
 // Error Handler
 app.use((req, res, next) => {
-    next(new CustomError("Route not found", 404));
+	next(new CustomError("Route not found", 404));
 });
 
 app.use(errorHandler);
@@ -50,10 +50,10 @@ const database = mongoose.connection;
 
 database.on("error", (error) => console.log(error));
 database.once("connected", () => {
-    console.log("Database is connected.");
-    app.listen(PORT, () => {
-        console.log(`Server is running on ${PORT} since ${now()}`);
-    });
+	console.log("Database is connected.");
+	app.listen(PORT, () => {
+		console.log(`Server is running on ${PORT} since ${now()}`);
+	});
 });
 
 // ----------------------------------------------------------------------------- //

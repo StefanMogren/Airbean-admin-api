@@ -7,9 +7,9 @@ import { validateBody } from "../middlewares/body.validator.js";
 
 // Controllers Import
 import {
-    getAllOrders,
-    getOrdersByUserId,
-    createOrder,
+	getAllOrders,
+	getOrdersByUserId,
+	createOrder,
 } from "../controllers/order.controllers.js";
 
 // Config
