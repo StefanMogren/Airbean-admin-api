@@ -1,17 +1,17 @@
-import MenuItem from "../models/menu.model.js";
+import Menu from "../models/menu.model.js";
 
 import CustomError from "../utils/customError.util.js";
 
 // GET /api/menu
 export const getAllMenuItems = async (req, res, next) => {
 	try {
-		const menuItems = await MenuItem.find();
+		const menuItems = await Menu.find();
 		res.status(200).json(menuItems);
 	} catch (err) {
 		next(new CustomError("Failed to get menu items", 500, err));
 	}
 };
-
+/* 
 // POST /api/menu/seed
 export const seedMenu = async (req, res, next) => {
 	try {
@@ -61,7 +61,8 @@ export const seedMenu = async (req, res, next) => {
 		next(new CustomError("Failed to seed menu items", 500, err));
 	}
 };
-
+ */
+/* 
 // POST /api/menu  // Adding a new item/items
 export const addMenuItem = async (req, res, next) => {
 	const { prodId, title, desc, price } = req.body;
@@ -77,3 +78,4 @@ export const addMenuItem = async (req, res, next) => {
 		next(new CustomError("Failed to add menu item", 400, err));
 	}
 };
+ */

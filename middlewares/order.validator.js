@@ -1,4 +1,4 @@
-import MenuItem from "../models/menu.model.js";
+import Menu from "../models/menu.model.js";
 
 export async function validateOrder(req, res, next) {
 	const { items, cartId } = req.body;
@@ -27,7 +27,7 @@ export async function validateOrder(req, res, next) {
     } */
 
 	// Get menu items from DB to validate prodIds
-	const menu = await MenuItem.find();
+	const menu = await Menu.find();
 	const validProdIds = menu.map((item) => item.prodId);
 
 	/*     for (let item of items) {

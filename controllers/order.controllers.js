@@ -1,6 +1,6 @@
 import Order from "../models/order.models.js";
 import Cart from "../models/cart.model.js";
-import Products from "../models/menu.model.js";
+import Menu from "../models/menu.model.js";
 import { calculateCartTotal } from "../utils/discount.util.js";
 
 // ----- GET /api/orders -----
@@ -78,7 +78,7 @@ export const createOrder = async (req, res) => {
 				// Kontroll att userId matchar mot användarens userId
 				if (global.user.userId === userId) {
 					const addedItems = [];
-					const menuItems = await Products.find();
+					const menuItems = await Menu.find();
 
 					const { total, discountsApplied } = calculateCartTotal(
 						items,
@@ -88,7 +88,7 @@ export const createOrder = async (req, res) => {
 
 					for (const item of items) {
 						const prodId = item.prodId;
-						const product = await Products.findOne({ prodId });
+						const product = await Menu.findOne({ prodId });
 
 						addedItems.push({
 							// ...item,
@@ -139,7 +139,7 @@ export const createOrder = async (req, res) => {
 				let total = 0;
 				for (const item of items) {
 					const prodId = item.prodId;
-					const product = await Products.findOne({ prodId });
+					const product = await Menu.findOne({ prodId });
 
 					addedItems.push({
 						// ...item,
