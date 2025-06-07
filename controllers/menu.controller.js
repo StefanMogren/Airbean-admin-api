@@ -5,8 +5,8 @@ import CustomError from "../utils/customError.util.js";
 // GET /api/menu
 export const getAllMenuItems = async (req, res, next) => {
 	try {
-		const menuItems = await Menu.find();
-		res.status(200).json(menuItems);
+		const menu = await Menu.find();
+		res.status(200).json(menu);
 	} catch (err) {
 		next(new CustomError("Failed to get menu items", 500, err));
 	}
