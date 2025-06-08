@@ -1,4 +1,4 @@
-export function calculateCartTotal(items, menuItems, isLoggedIn = false) {
+export function calculateCartTotal(items, menuItems, registeredUser = false) {
 	let allProducts = [];
 	items.forEach((item) => {
 		const product = menuItems.find((m) => m.prodId === item.prodId);
@@ -26,7 +26,7 @@ export function calculateCartTotal(items, menuItems, isLoggedIn = false) {
 	}
 
 	// 10% discount for registered users
-	if (isLoggedIn) {
+	if (registeredUser) {
 		discountsApplied.push(
 			"Active Discount: 10% discount for registered users."
 		);

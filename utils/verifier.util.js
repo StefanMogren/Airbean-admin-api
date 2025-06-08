@@ -13,7 +13,7 @@ export async function comparePasswords(password, hashedPassword) {
 
 export function signToken(payload) {
 	const token = jwt.sign(payload, process.env.SECRETMESSAGE, {
-		expiresIn: 60 * 60,
+		expiresIn: 60 * 10,
 	});
 
 	return token;

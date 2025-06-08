@@ -69,7 +69,7 @@ export const createOrder = async (req, res) => {
 	// Kontroll att cart med cartId finns
 	if (cart) {
 		const { userId, guestId, items } = cart;
-		const isLoggedIn = global.user;
+		const registeredUser = global.user;
 		// let total = 0;
 
 		if (cart.items.length > 0) {
@@ -83,7 +83,7 @@ export const createOrder = async (req, res) => {
 					const { total, discountsApplied } = calculateCartTotal(
 						items,
 						menuItems,
-						isLoggedIn
+						registeredUser
 					);
 
 					for (const item of items) {

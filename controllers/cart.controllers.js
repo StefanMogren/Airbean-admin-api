@@ -3,6 +3,7 @@ import Menu from "../models/menu.model.js";
 import { calculateCartTotal } from "../utils/discount.util.js";
 
 import CustomError from "../utils/customError.util.js";
+import { verifyToken } from "../utils/verifier.util.js";
 
 // GET /api/cart - Return All
 export const getCart = async (req, res, next) => {
@@ -28,11 +29,15 @@ export const getCartById = async (req, res, next) => {
 		}
 
 		const menuItems = await Menu.find();
-		const isLoggedIn = !!global.user;
+
+		const token = req.cookies.userToken;
+		const decodedToken = verifyToken(token);
+
+		const registeredUser = cart.guestId ? false : true;
 		const { total, discountsApplied } = calculateCartTotal(
 			cart.items,
 			menuItems,
-			isLoggedIn
+			registeredUser
 		);
 
 		const itemsWithDetails = cart.items.map((item) => {
@@ -52,7 +57,7 @@ export const getCartById = async (req, res, next) => {
 			items: itemsWithDetails,
 			total,
 			discountsApplied,
-			isLoggedIn,
+			registeredUser,
 			createdAt: cart.createdAt,
 			updatedAt: cart.updatedAt,
 		});
@@ -65,15 +70,9 @@ export const getCartById = async (req, res, next) => {
 export const updateCart = async (req, res, next) => {
 	try {
 		const { guestId, prodId, qty } = req.body;
-		const userId = global.user ? global.user.userId : null;
+		const token = req.cookies.userToken;
 
-		/* if (!prodId || !qty || qty < 0) {
-            return next(new CustomError("prodId and valid qty required.", 400));
-        }
-
-        if (typeof qty !== "number") {
-            return next(new CustomError("Quantity must be a number", 400));
-        } */
+		let registeredUser;
 
 		const product = await Menu.findOne({ prodId });
 		if (!product) {
@@ -81,10 +80,19 @@ export const updateCart = async (req, res, next) => {
 		}
 
 		let cart;
-		if (userId) {
-			cart = await Cart.findOne({ userId });
-			if (!cart) cart = await Cart.create({ userId, items: [] });
+		if (token) {
+			const decodedToken = verifyToken(token);
+
+			if (decodedToken) {
+				registeredUser = true;
+				const userId = decodedToken.userId;
+				cart = await Cart.findOne({ userId });
+				if (!cart) cart = await Cart.create({ userId, items: [] });
+			} else {
+				return next(new CustomError("Invalid or expired token", 400));
+			}
 		} else if (guestId) {
+			registeredUser = false;
 			cart = await Cart.findOne({ guestId });
 			if (!cart) cart = await Cart.create({ guestId, items: [] });
 		} else {
@@ -107,11 +115,11 @@ export const updateCart = async (req, res, next) => {
 		await cart.save();
 
 		const menuItems = await Menu.find();
-		const isLoggedIn = !!global.user;
+
 		const { total, discountsApplied } = calculateCartTotal(
 			cart.items,
 			menuItems,
-			isLoggedIn
+			registeredUser
 		);
 
 		const itemsWithDetails = cart.items.map((item) => {
@@ -131,7 +139,7 @@ export const updateCart = async (req, res, next) => {
 			items: itemsWithDetails,
 			total,
 			discountsApplied,
-			isLoggedIn,
+			registeredUser,
 			createdAt: cart.createdAt,
 			updatedAt: cart.updatedAt,
 		});

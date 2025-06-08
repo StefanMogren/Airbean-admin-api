@@ -24,6 +24,8 @@ const router = Router();
 router.get("/logout", async (req, res) => {
 	// Kontroll ifall det finns en användare i "global.user"
 	const token = req.cookies.userToken;
+	console.log(token);
+
 	if (token) {
 		res.clearCookie("userToken", {
 			httpOnly: true,
@@ -91,7 +93,6 @@ router.post("/login", validateBody, async (req, res) => {
 
 			if (correctPassword) {
 				const token = signToken({ userId: user.userId });
-				global.token = token;
 				res.cookie("userToken", token, {
 					httpOnly: true,
 					secure: false,
