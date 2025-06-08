@@ -2,6 +2,7 @@ import Order from "../models/order.models.js";
 import Cart from "../models/cart.model.js";
 import Menu from "../models/menu.model.js";
 import { calculateCartTotal } from "../utils/discount.util.js";
+import { verifyToken } from "../utils/verifier.util.js";
 
 // ----- GET /api/orders -----
 // Returnerar alla ordrar
@@ -61,7 +62,6 @@ export const getOrdersByUserId = async (req, res) => {
 // Kollar ifall användaren är inloggad eller ej
 export const createOrder = async (req, res) => {
 	// Kontroll ifall någon body finns
-	// if (req.body) {
 	const { cartId } = req.body;
 
 	const cart = await Cart.findOne({ cartId: cartId });
@@ -69,21 +69,23 @@ export const createOrder = async (req, res) => {
 	// Kontroll att cart med cartId finns
 	if (cart) {
 		const { userId, guestId, items } = cart;
-		const registeredUser = global.user;
 		// let total = 0;
 
 		if (cart.items.length > 0) {
 			// Kontroll att en användare är inloggad och att userId finns
-			if (global.user && userId) {
+			const token = req.cookies.userToken;
+			const decodedToken = verifyToken(token);
+
+			if (decodedToken && userId) {
 				// Kontroll att userId matchar mot användarens userId
-				if (global.user.userId === userId) {
+				if (decodedToken.userId === userId) {
 					const addedItems = [];
 					const menuItems = await Menu.find();
 
 					const { total, discountsApplied } = calculateCartTotal(
 						items,
 						menuItems,
-						registeredUser
+						true
 					);
 
 					for (const item of items) {
@@ -97,7 +99,6 @@ export const createOrder = async (req, res) => {
 							title: product.title,
 							price: product.price,
 						});
-						// total += product.price * item.qty;
 					}
 
 					const order = await Order.create({
@@ -127,7 +128,7 @@ export const createOrder = async (req, res) => {
 				});
 
 				// Kontroll ifall användare är inloggad men cart är för en gäst.
-			} else if (global.user) {
+			} else if (decodedToken) {
 				return res.status(403).json({
 					success: false,
 					message: "Can't create order for guest user",
