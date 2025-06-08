@@ -1,4 +1,4 @@
-export function validateAuthBody(req, res, next) {
+export function validateRegister(req, res, next) {
 	// Kontroll ifall det ens finns en body
 
 	const { username, password, role } = req.body;

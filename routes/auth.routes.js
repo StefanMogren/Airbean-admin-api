@@ -10,7 +10,7 @@ import {
 } from "../utils/verifier.util.js";
 
 // Middleware Import
-import { validateAuthBody } from "../middlewares/auth.validator.js";
+import { validateRegister } from "../middlewares/auth.validator.js";
 import { validateBody } from "../middlewares/body.validator.js";
 
 // Controllers Import
@@ -23,12 +23,17 @@ const router = Router();
 // Loggar ut användaren
 router.get("/logout", async (req, res) => {
 	// Kontroll ifall det finns en användare i "global.user"
-	if (global.user) {
-		global.user = null;
+	const token = req.cookies.userToken;
+	if (token) {
+		res.clearCookie("userToken", {
+			httpOnly: true,
+			sameSite: "Strict",
+			secure: false,
+		});
 
 		res.json({
 			success: true,
-			message: "User logged out successfully",
+			message: "User logged out",
 		});
 	} else {
 		res.status(400).json({
@@ -41,7 +46,7 @@ router.get("/logout", async (req, res) => {
 // ---------- SKA UPPDATERAS ----------
 // ----- POST register new user -----
 // Registrerar en ny användare
-router.post("/register", validateBody, validateAuthBody, async (req, res) => {
+router.post("/register", validateBody, validateRegister, async (req, res) => {
 	const { username, password, role } = req.body;
 
 	const hashedPassword = await hashPassword(password);
@@ -71,29 +76,49 @@ router.post("/register", validateBody, validateAuthBody, async (req, res) => {
 
 // ----- POST login user -----
 // Loggar in en användare
-router.post("/login", validateBody, validateAuthBody, async (req, res) => {
+router.post("/login", validateBody, async (req, res) => {
 	// Kontroll ifall en användare redan är inloggad
-	if (!global.user) {
+	const token = req.cookies.userToken;
+	if (!token) {
 		const { username, password } = req.body;
 		const user = await getUser(username);
 
-		// Kontroll ifall användaren finns samt att lösenordet stämmer
-		if (user && user.password === password) {
-			global.user = user;
-			res.json({
-				success: true,
-				message: "User logged in successfully",
-			});
+		if (user) {
+			const correctPassword = await comparePasswords(
+				password,
+				user.password
+			);
+
+			if (correctPassword) {
+				const token = signToken({ userId: user.userId });
+				global.token = token;
+				res.cookie("userToken", token, {
+					httpOnly: true,
+					secure: false,
+					sameSite: "Strict",
+					maxAge: 60 * 60 * 1000, // En timme
+				});
+				res.json({
+					success: true,
+					message: "User logged in successfully",
+					token: `Bearer ${token}`,
+				});
+			} else {
+				res.status(400).json({
+					success: false,
+					message: "Username and/or password are incorrect./password",
+				});
+			}
 		} else {
 			res.status(400).json({
 				success: false,
-				message: "Username and/or password are incorrect.",
+				message: "Username and/or password are incorrect./user",
 			});
 		}
 	} else {
 		res.status(400).json({
 			success: false,
-			message: "User already logged in.",
+			message: "User is already logged in",
 		});
 	}
 });

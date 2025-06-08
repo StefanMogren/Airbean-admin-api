@@ -2,7 +2,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-
+import cookieParser from "cookie-parser";
 //Middleware Imports
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 
@@ -28,6 +28,7 @@ const CONNECTION_STRING = process.env.CONNECTION_STRING;
 
 //Middlewares
 app.use(express.json());
+app.use(cookieParser());
 
 //Routes
 app.use("/api/auth", authRouter);
