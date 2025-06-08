@@ -22,7 +22,7 @@ const router = Router();
 // ----- GET logout user -----
 // Loggar ut användaren
 router.get("/logout", async (req, res) => {
-	// Kontroll ifall det finns en användare i "global.user"
+	// Kontroll ifall det finns en cookie med en token i sig
 	const token = req.cookies.userToken;
 	console.log(token);
 

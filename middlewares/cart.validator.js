@@ -1,6 +1,5 @@
 export function validateCartUpdate(req, res, next) {
 	const { prodId, qty, guestId } = req.body;
-	const userId = global.user ? global.user.userId : null;
 
 	// Checking for items in menu with prodID
 	if (!prodId || typeof prodId !== "string") {
@@ -26,11 +25,6 @@ export function validateCartUpdate(req, res, next) {
 	}
 
 	// Checking for either userId  or guestId
-	if (!userId && !guestId) {
-		return res.status(400).json({
-			success: false,
-			message: "Missing guestId or not logged in",
-		});
-	}
+
 	next(); // Passed all the checks
 }
