@@ -7,12 +7,13 @@ import {
 } from "../controllers/menu.controllers.js";
 import asyncHandler from "../utils/asyncHandler.util.js";
 import { validateBody } from "../middlewares/body.validator.js";
+import { verifyAdmin } from "../utils/verifyAdmin.util.js";
 
 const router = Router();
 
 router.get("/", asyncHandler(getAllMenuItems));
-router.post("/", validateBody, asyncHandler(addNewMenuItem));
-router.put("/:prodId", validateBody, asyncHandler(updateMenuItem));
-router.delete("/:prodId", asyncHandler(deleteMenuItem));
+router.post("/", verifyAdmin, validateBody, asyncHandler(addNewMenuItem));
+router.put("/:prodId", verifyAdmin, validateBody, asyncHandler(updateMenuItem));
+router.delete("/:prodId", verifyAdmin, asyncHandler(deleteMenuItem));
 
 export default router;

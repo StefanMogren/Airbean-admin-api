@@ -20,7 +20,7 @@ export const addNewMenuItem = async (req, res, next) => {
 	try {
 		/* 	const token = req.headers.authorization.replace("Bearer ", "");
 		console.log(token); */
-
+		/* 
 		const token = req.cookies.userToken;
 		const decodedToken = verifyToken(token);
 
@@ -34,7 +34,7 @@ export const addNewMenuItem = async (req, res, next) => {
 				new CustomError("Action not allowed as user or guest.", 403)
 			);
 		}
-
+ */
 		const { title, desc, price } = req.body;
 		if (!title || !desc || !price) {
 			return next(
@@ -67,7 +67,9 @@ export const addNewMenuItem = async (req, res, next) => {
 // PUT /api/menu/{prodId}
 export const updateMenuItem = async (req, res, next) => {
 	try {
-	} catch (error) {}
+	} catch (error) {
+		next(error);
+	}
 };
 
 // DELETE /api/menu/{prodId}
