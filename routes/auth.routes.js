@@ -7,6 +7,7 @@ import {
 	hashPassword,
 	comparePasswords,
 	signToken,
+	verifyToken,
 } from "../utils/verifier.util.js";
 
 // Middleware Import
@@ -23,9 +24,8 @@ const router = Router();
 // Loggar ut användaren
 router.get("/logout", async (req, res) => {
 	// Kontroll ifall det finns en cookie med en token i sig
-	const token = req.headers.authorization.replace("Bearer ", "");
+	const token = req.headers.authorization;
 	// const token = req.cookies.userToken;
-	console.log(token);
 
 	if (token) {
 		// Kod för användningen av cookies som vi inte skulle använda
@@ -82,9 +82,15 @@ router.post("/register", validateBody, validateRegister, async (req, res) => {
 // Loggar in en användare
 router.post("/login", validateBody, async (req, res) => {
 	// Kontroll ifall en användare redan är inloggad
-	const token = req.headers.authorization.replace("Bearer ", "");
+	const authorization = req.headers.authorization;
+	let decodedToken = null;
+	if (authorization) {
+		const token = req.headers.authorization.replace("Bearer ", "");
+		decodedToken = verifyToken(token);
+	}
 	// const token = req.cookies.userToken;
-	if (!token) {
+
+	if (!decodedToken) {
 		const { username, password } = req.body;
 		const user = await getUser(username);
 

@@ -54,6 +54,7 @@ export const updateMenuItem = async (req, res, next) => {
 
 		const menuItem = await Menu.findOne({ prodId });
 
+		// Kontroll ifall menuItem finns eller ej
 		if (!menuItem) {
 			return next(new CustomError("No item with prodId found.", 400));
 		}
@@ -67,6 +68,12 @@ export const updateMenuItem = async (req, res, next) => {
 				)
 			);
 		}
+
+		menuItem.title = title;
+		menuItem.desc = desc;
+		menuItem.price = price;
+
+		await menuItem.save();
 
 		res.json({
 			success: true,
