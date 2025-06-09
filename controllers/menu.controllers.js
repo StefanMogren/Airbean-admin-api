@@ -87,5 +87,22 @@ export const updateMenuItem = async (req, res, next) => {
 // DELETE /api/menu/{prodId}
 export const deleteMenuItem = async (req, res, next) => {
 	try {
-	} catch (error) {}
+		const { prodId } = req.params;
+
+		const menuItem = await Menu.findOne({ prodId });
+
+		// Kontroll ifall menuItem finns eller ej
+		if (!menuItem) {
+			return next(new CustomError("No item with prodId found.", 400));
+		}
+
+		await Menu.findOneAndDelete({ prodId });
+
+		res.json({
+			success: true,
+			message: "Successfully deleted item",
+		});
+	} catch (error) {
+		next(error);
+	}
 };
