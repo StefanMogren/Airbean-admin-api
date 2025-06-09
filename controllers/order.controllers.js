@@ -73,7 +73,8 @@ export const createOrder = async (req, res) => {
 
 		if (cart.items.length > 0) {
 			// Kontroll att en användare är inloggad och att userId finns
-			const token = req.cookies.userToken;
+			const token = req.headers.authorization.replace("Bearer ", "");
+			// const token = req.cookies.userToken;
 			const decodedToken = verifyToken(token);
 
 			if (decodedToken && userId) {

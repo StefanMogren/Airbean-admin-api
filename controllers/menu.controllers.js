@@ -18,23 +18,6 @@ export const getAllMenuItems = async (req, res, next) => {
 // POST /api/menu
 export const addNewMenuItem = async (req, res, next) => {
 	try {
-		/* 	const token = req.headers.authorization.replace("Bearer ", "");
-		console.log(token); */
-		/* 
-		const token = req.cookies.userToken;
-		const decodedToken = verifyToken(token);
-
-		if (!decodedToken) {
-			return next(new CustomError("Invalid or expired token", 400));
-		}
-
-		const user = await getUserByUserId(decodedToken.userId);
-		if (user.role !== "admin") {
-			return next(
-				new CustomError("Action not allowed as user or guest.", 403)
-			);
-		}
- */
 		const { title, desc, price } = req.body;
 		if (!title || !desc || !price) {
 			return next(
@@ -67,6 +50,28 @@ export const addNewMenuItem = async (req, res, next) => {
 // PUT /api/menu/{prodId}
 export const updateMenuItem = async (req, res, next) => {
 	try {
+		const { prodId } = req.params;
+
+		const menuItem = await Menu.findOne({ prodId });
+
+		if (!menuItem) {
+			return next(new CustomError("No item with prodId found.", 400));
+		}
+
+		const { title, desc, price } = req.body;
+		if (!title || !desc || !price) {
+			return next(
+				new CustomError(
+					"Both title, desc, and price are required.",
+					400
+				)
+			);
+		}
+
+		res.json({
+			success: true,
+			message: "Successfully edited item",
+		});
 	} catch (error) {
 		next(error);
 	}

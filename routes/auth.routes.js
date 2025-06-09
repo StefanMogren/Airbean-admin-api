@@ -23,15 +23,17 @@ const router = Router();
 // Loggar ut användaren
 router.get("/logout", async (req, res) => {
 	// Kontroll ifall det finns en cookie med en token i sig
-	const token = req.cookies.userToken;
+	const token = req.headers.authorization.replace("Bearer ", "");
+	// const token = req.cookies.userToken;
 	console.log(token);
 
 	if (token) {
-		res.clearCookie("userToken", {
+		// Kod för användningen av cookies som vi inte skulle använda
+		/* 		res.clearCookie("userToken", {
 			httpOnly: true,
 			sameSite: "Strict",
 			secure: false,
-		});
+		}); */
 
 		res.json({
 			success: true,
@@ -80,7 +82,8 @@ router.post("/register", validateBody, validateRegister, async (req, res) => {
 // Loggar in en användare
 router.post("/login", validateBody, async (req, res) => {
 	// Kontroll ifall en användare redan är inloggad
-	const token = req.cookies.userToken;
+	const token = req.headers.authorization.replace("Bearer ", "");
+	// const token = req.cookies.userToken;
 	if (!token) {
 		const { username, password } = req.body;
 		const user = await getUser(username);
@@ -93,12 +96,14 @@ router.post("/login", validateBody, async (req, res) => {
 
 			if (correctPassword) {
 				const token = signToken({ userId: user.userId });
-				res.cookie("userToken", token, {
+
+				// Kod för cookies som vi inte skulle använda
+				/* 				res.cookie("userToken", token, {
 					httpOnly: true,
 					secure: false,
 					sameSite: "Strict",
 					maxAge: 60 * 60 * 1000, // En timme
-				});
+				}); */
 				res.json({
 					success: true,
 					message: "User logged in successfully",

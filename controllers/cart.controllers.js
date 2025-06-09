@@ -29,8 +29,8 @@ export const getCartById = async (req, res, next) => {
 		}
 
 		const menuItems = await Menu.find();
-
-		const token = req.cookies.userToken;
+		const token = req.headers.authorization.replace("Bearer ", "");
+		// const token = req.cookies.userToken;
 		const decodedToken = verifyToken(token);
 
 		const registeredUser = cart.guestId ? false : true;
@@ -70,7 +70,8 @@ export const getCartById = async (req, res, next) => {
 export const updateCart = async (req, res, next) => {
 	try {
 		const { guestId, prodId, qty } = req.body;
-		const token = req.cookies.userToken;
+		const token = req.headers.authorization.replace("Bearer ", "");
+		// const token = req.cookies.userToken;
 
 		let registeredUser;
 
