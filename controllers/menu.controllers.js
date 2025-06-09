@@ -9,9 +9,12 @@ import { getUserByUserId } from "./auth.controllers.js";
 export const getAllMenuItems = async (req, res, next) => {
 	try {
 		const menu = await Menu.find();
-		res.status(200).json(menu);
+		res.json({
+			success: true,
+			menu: menu,
+		});
 	} catch (err) {
-		next(new CustomError("Failed to get menu items", 500, err));
+		next(new CustomError("Could not find any menu", 404, err));
 	}
 };
 
@@ -21,10 +24,7 @@ export const addNewMenuItem = async (req, res, next) => {
 		const { title, desc, price } = req.body;
 		if (!title || !desc || !price) {
 			return next(
-				new CustomError(
-					"Both title, desc, and price are required.",
-					400
-				)
+				new CustomError("Both title, desc, and price are required.", 400)
 			);
 		}
 		const updatedMenu = await Menu.create({
@@ -62,10 +62,7 @@ export const updateMenuItem = async (req, res, next) => {
 		const { title, desc, price } = req.body;
 		if (!title || !desc || !price) {
 			return next(
-				new CustomError(
-					"Both title, desc, and price are required.",
-					400
-				)
+				new CustomError("Both title, desc, and price are required.", 400)
 			);
 		}
 
