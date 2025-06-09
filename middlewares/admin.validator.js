@@ -1,5 +1,5 @@
-import { verifyToken } from "./verifier.util.js";
-import CustomError from "./customError.util.js";
+import { verifyToken } from "../utils/verifier.util.js";
+import CustomError from "../utils/customError.util.js";
 import { getUserByUserId } from "../controllers/auth.controllers.js";
 
 export const verifyAdmin = async (req, res, next) => {
@@ -8,10 +8,8 @@ export const verifyAdmin = async (req, res, next) => {
 	if (!authorization) {
 		throw new CustomError("No token provided", 400);
 	}
-	const token = authorization.replace("Bearer ", "");
 
-	// Kod för cookies som inte ska användas
-	// const token = req.cookies.userToken;
+	const token = authorization.replace("Bearer ", "");
 
 	const decodedToken = verifyToken(token);
 	if (!decodedToken) {

@@ -7,7 +7,7 @@ import {
 } from "../controllers/menu.controllers.js";
 import asyncHandler from "../utils/asyncHandler.util.js";
 import { validateBody } from "../middlewares/body.validator.js";
-import { verifyAdmin } from "../utils/verifyAdmin.util.js";
+import { verifyAdmin } from "../middlewares/admin.validator.js";
 
 const router = Router();
 
