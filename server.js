@@ -3,6 +3,9 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 // import cookieParser from "cookie-parser";
+import swaggerUI from "swagger-ui-express";
+import YAML from "yamljs";
+
 //Middleware Imports
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 
@@ -16,7 +19,6 @@ import ordersRouter from "./routes/orders.routes.js";
 import CustomError from "./utils/customError.util.js";
 
 // ----------------------------------------------------------------------------- //
-
 //Config
 dotenv.config();
 
@@ -26,11 +28,14 @@ const now = () => new Date().toLocaleString();
 const PORT = process.env.PORT;
 const CONNECTION_STRING = process.env.CONNECTION_STRING;
 
+const swaggerDocs = YAML.load("./docs/docs.yml");
+
 //Middlewares
 app.use(express.json());
 // app.use(cookieParser());
 
 //Routes
+app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 app.use("/api/auth", authRouter);
 app.use("/api/menu", menuRouter);
 app.use("/api/cart", cartRouter);
