@@ -21,8 +21,14 @@ components:
     # ----- ProdId -----
     ProdId:
       type: string
-      description: product ID
+      description: Product ID
       example: prod-5a571
+
+    # ----- UserId -----
+    UserId:
+      type: string
+      description: User ID
+      example: user-g98g3
 
     # ----- Token -----
     Token:
@@ -386,6 +392,21 @@ components:
                 type: string
                 example: Both title, desc, and price are required
 
+    # ----- MenuItemExistsError -----
+    MenuItemExistsError:
+      description: Menu item already exists
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: Menu item already exists
+
     # ----- TokenError -----
     TokenError:
       description: Invalid or expired token
@@ -434,7 +455,6 @@ paths:
                           price: 39,
                         },
                       ]
-
         "404":
           description: Failed to find menu
           content:
@@ -448,14 +468,18 @@ paths:
                   message:
                     type: string
                     example: Could not find any menu
-        "400":
-          $ref: "#/components/responses/TokenError"
 
     # ----- POST add new menu item -----
     post:
       tags:
         - Menu
       description: Adds a new item to menu
+      parameters:
+        - in: headers
+          name: token
+          required: true
+          schema:
+            $ref: "#/components/schemas/Token"
       requestBody:
         required: true
         content:
@@ -475,6 +499,34 @@ paths:
                   message:
                     type: string
                     example: Successfully added new menu item
+        "400":
+          description: Bad request - multiple scenarios
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+              examples:
+                titleDescPrice:
+                  summary: Missing title, desc, or price
+                  value:
+                    success: false
+                    message: Both title, desc, and price are required
+                menuItemExists:
+                  summary: Menu item already exists
+                  value:
+                    success: false
+                    message: Menu item already exists
+                failedToAdd:
+                  summary: Failed to add menu item
+                  value:
+                    success: false
+                    message: Failed to add new menu item
 
   /api/menu/{prodId}:
     # ----- PUT update menu item -----
@@ -482,6 +534,17 @@ paths:
       tags:
         - Menu
       description:
+      parameters:
+        - in: headers
+          name: token
+          required: true
+          schema:
+            $ref: "#/components/schemas/Token"
+        - in: path
+          name: prodId
+          required: true
+          schema:
+            $ref: "#/components/schemas/ProdId"
       requestBody:
         required: true
         content:
@@ -507,6 +570,17 @@ paths:
       tags:
         - Menu
       description:
+      parameters:
+        - in: headers
+          name: token
+          required: true
+          schema:
+            $ref: "#/components/schemas/Token"
+        - in: path
+          name: prodId
+          required: true
+          schema:
+            $ref: "#/components/schemas/ProdId"
       responses:
         "200":
           description: Confirmation on deleting menu item
@@ -662,6 +736,12 @@ paths:
       tags:
         - Cart
       description:
+      parameters:
+        - in: path
+          name: cartId
+          required: true
+          schema:
+            $ref: "#/components/schemas/CartId"
       responses:
         "200":
           description: Get a cart by cartId
@@ -722,6 +802,12 @@ paths:
       tags:
         - Orders
       description:
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
       responses:
         "200":
           description: Get all orders by userId
