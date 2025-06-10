@@ -10,13 +10,33 @@ components:
     UserLogin:
       type: object
       description: Login credentials
-      example: { username: coffeedrinker, password: oh39gu74wb(7 }
+      properties:
+        username:
+          type: string
+          description: Name of user
+          example: coffeedrinker
+        password:
+          type: string
+          description: Password for logging in
+          example: oh39gu74wb(7
 
     # ----- UserRegister -----
     UserRegister:
       type: object
       description: Registration credentials
-      example: { username: coffeedrinker, password: oh39gu74wb(7, role: user }
+      properties:
+        username:
+          type: string
+          description: Name of user
+          example: coffeedrinker
+        password:
+          type: string
+          description: Password for logging in
+          example: oh39gu74wb(7
+        role:
+          type: string
+          description: User or admin
+          example: user
 
     # ----- ProdId -----
     ProdId:
@@ -45,7 +65,7 @@ components:
     # ----- Product -----
     Product:
       type: object
-      description: Product description
+      description: Product information
       properties:
         title:
           type: string
@@ -64,7 +84,15 @@ components:
     UpdateCart:
       type: object
       description: Update cart with product
-      example: { "prodId": "prod-jespe", "qty": 5 }
+      properties:
+        prodId:
+          type: string
+          description: ID for the product
+          example: prod-jespe
+        qty:
+          type: number
+          description: Number of items
+          example: 5
 
   # --------------- RequestBody ---------------
   requestBody:
@@ -355,7 +383,7 @@ paths:
       description: Returns a menu of items
       responses:
         "200":
-          description: Returns a menu of items
+          description: Returns the menu with all items
           content:
             application/json:
               schema:
@@ -373,6 +401,18 @@ paths:
                           title: Bryggkaffe,
                           desc: Bryggd på månadens bönor.,
                           price: 39,
+                        },
+                        {
+                          prodId: prod-rnybe,
+                          title: Caffè Doppio,
+                          desc: Bryggd på månadens bönor.,
+                          price: 49,
+                        },
+                        {
+                          prodId: prod-rgist,
+                          title: Cappuccino,
+                          desc: Bryggd på månadens bönor.,
+                          price: 49,
                         },
                       ]
         "404":
@@ -392,7 +432,7 @@ paths:
     post: # ----- POST add new menu item -----
       tags:
         - Menu
-      description: Adds a new item to menu
+      description: Adds a new item to the menu
       parameters:
         - in: headers
           name: token
@@ -473,7 +513,7 @@ paths:
     put: # ----- PUT update menu item -----
       tags:
         - Menu
-      description:
+      description: Updates an existing item in the menu
       parameters:
         - in: headers
           name: token
@@ -558,7 +598,7 @@ paths:
     delete: # ----- DELETE menu item -----
       tags:
         - Menu
-      description:
+      description: Removes an item from the menu
       parameters:
         - in: headers
           name: token
@@ -630,7 +670,7 @@ paths:
     get: # ----- GET logout user -----
       tags:
         - Auth
-      description:
+      description: Logs out the user
       responses:
         "200":
           description: Logging out user
@@ -737,7 +777,7 @@ paths:
     post: # ----- POST login user -----
       tags:
         - Auth
-      description:
+      description: Logs in the user
       requestBody:
         required: true
         content:
@@ -785,7 +825,7 @@ paths:
     get: # ----- GET carts -----
       tags:
         - Cart
-      description:
+      description: Gets all currently filled carts
       responses:
         "200":
           description: Returns all carts
@@ -809,7 +849,7 @@ paths:
     put: # ----- PUT update cart -----
       tags:
         - Cart
-      description:
+      description: Lets user update the content of their cart
       requestBody:
         required: true
         content:
@@ -854,7 +894,7 @@ paths:
     get: # ----- GET cart by cartId -----
       tags:
         - Cart
-      description:
+      description: Gets a cart by its cartId
       parameters:
         - in: path
           name: cartId
@@ -893,7 +933,7 @@ paths:
     get: # ----- GET orders -----
       tags:
         - Orders
-      description:
+      description: Gets all current orders
       responses:
         "200":
           $ref: "#/components/responses/OrdersResponse"
@@ -914,7 +954,7 @@ paths:
     post: # ----- POST create order -----
       tags:
         - Orders
-      description:
+      description: Lets user create an order with the content of their cart
       requestBody:
         required: true
         content:
@@ -992,7 +1032,7 @@ paths:
     get: # ----- GET orders by userId -----
       tags:
         - Orders
-      description:
+      description: Get all orders based on userId
       parameters:
         - in: path
           name: userId
