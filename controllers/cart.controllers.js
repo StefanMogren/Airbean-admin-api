@@ -73,7 +73,14 @@ export const getCartById = async (req, res, next) => {
 export const updateCart = async (req, res, next) => {
 	try {
 		const { guestId, prodId, qty } = req.body;
-		const token = req.headers.authorization.replace("Bearer ", "");
+		const authorization = req.headers.authorization;
+
+		if (!authorization) {
+			return next(
+				new CustomError("Missing token in headers.authorization.", 400)
+			);
+		}
+		const token = authorization.replace("Bearer ", "");
 		// const token = req.cookies.userToken;
 
 		let registeredUser;

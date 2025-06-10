@@ -55,7 +55,7 @@ router.get("/logout", async (req, res) => {
 router.post("/register", validateBody, validateRegister, async (req, res) => {
 	const { username, password, role } = req.body;
 
-	const userExists = User.findOne({ username });
+	const userExists = await User.findOne({ username });
 	if (userExists) {
 		res.status(400).json({
 			success: false,
@@ -125,13 +125,13 @@ router.post("/login", validateBody, async (req, res) => {
 			} else {
 				res.status(400).json({
 					success: false,
-					message: "Username and/or password are incorrect./password",
+					message: "Username and/or password are incorrect.",
 				});
 			}
 		} else {
 			res.status(400).json({
 				success: false,
-				message: "Username and/or password are incorrect./user",
+				message: "Username and/or password are incorrect.",
 			});
 		}
 	} else {

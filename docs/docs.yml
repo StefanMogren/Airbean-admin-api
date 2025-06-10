@@ -432,7 +432,7 @@ paths:
     post: # ----- POST add new menu item -----
       tags:
         - Menu
-      description: Adds a new item to the menu
+      description: Adds a new item to the menu. Requires a valid token and admin priveliges.
       parameters:
         - in: headers
           name: token
@@ -513,7 +513,7 @@ paths:
     put: # ----- PUT update menu item -----
       tags:
         - Menu
-      description: Updates an existing item in the menu
+      description: Updates an existing item in the menu. Requires a valid token and admin priveliges.
       parameters:
         - in: headers
           name: token
@@ -598,7 +598,7 @@ paths:
     delete: # ----- DELETE menu item -----
       tags:
         - Menu
-      description: Removes an item from the menu
+      description: Removes an item from the menu. Requires a valid token and admin priveliges.
       parameters:
         - in: headers
           name: token
@@ -670,7 +670,7 @@ paths:
     get: # ----- GET logout user -----
       tags:
         - Auth
-      description: Logs out the user
+      description: Logs out the user. Requires valid token.
       responses:
         "200":
           description: Logging out user
@@ -849,7 +849,7 @@ paths:
     put: # ----- PUT update cart -----
       tags:
         - Cart
-      description: Lets user update the content of their cart
+      description: Lets user update the content of their cart. Requires valid token.
       requestBody:
         required: true
         content:
@@ -954,7 +954,7 @@ paths:
     post: # ----- POST create order -----
       tags:
         - Orders
-      description: Lets user create an order with the content of their cart
+      description: Lets user create an order with the content of their cart. Requires valid token.
       requestBody:
         required: true
         content:
