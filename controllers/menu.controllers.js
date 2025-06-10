@@ -27,6 +27,11 @@ export const addNewMenuItem = async (req, res, next) => {
 				new CustomError("Both title, desc, and price are required.", 400)
 			);
 		}
+		const menuItemExist = await Menu.findOne({ title });
+		if (menuItemExist) {
+			return next(new CustomError("Menu item already exists.", 400));
+		}
+
 		const updatedMenu = await Menu.create({
 			prodId: generateProdId(),
 			title,
@@ -35,7 +40,7 @@ export const addNewMenuItem = async (req, res, next) => {
 		});
 
 		if (updatedMenu) {
-			res.json({
+			res.status(201).json({
 				success: true,
 				message: "Successfully added new menu item",
 			});

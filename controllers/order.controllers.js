@@ -111,7 +111,7 @@ export const createOrder = async (req, res) => {
 					await Cart.deleteOne({ cartId: cartId });
 					return res.status(201).json({
 						success: true,
-						message: "Order created.",
+						message: "Successfully created order.",
 						order: order,
 					});
 				} else {
@@ -161,7 +161,7 @@ export const createOrder = async (req, res) => {
 				await Cart.deleteOne({ cartId: cartId });
 				return res.status(201).json({
 					success: true,
-					message: "Order created.",
+					message: "Successfully created order.",
 					order: order,
 				});
 			} else {
