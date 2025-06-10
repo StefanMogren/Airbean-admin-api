@@ -6,6 +6,18 @@ openapi: 3.0.1
 components:
   # --------------- Schemas ---------------
   schemas:
+    # ----- UserLogin -----
+    UserLogin:
+      type: object
+      description: Login credentials
+      example: { username: coffeedrinker, password: oh39gu74wb(7 }
+
+    # ----- UserRegister -----
+    UserRegister:
+      type: object
+      description: Registration credentials
+      example: { username: coffeedrinker, password: oh39gu74wb(7, role: user }
+
     # ----- ProdId -----
     ProdId:
       type: string
@@ -23,6 +35,12 @@ components:
       type: object
       description: Product description
       example: { title: Dubbel latte, desc: Bryggd på månadens böna, price: 39 }
+
+    # ----- UpdateCart -----
+    UpdateCart:
+      type: object
+      description: Update cart with product
+      example: { "prodId": "prod-jespe", "qty": 5 }
 
     Cart:
       type: object
@@ -545,6 +563,12 @@ paths:
       tags:
         - Auth
       description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            $ref: "#/components/schemas/UserRegister"
+
       responses:
         "201":
           description: Register new user
@@ -566,6 +590,11 @@ paths:
       tags:
         - Auth
       description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            $ref: "#/components/schemas/UserLogin"
       responses:
         "200":
           description: Logging in user
@@ -608,6 +637,11 @@ paths:
       tags:
         - Cart
       description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            $ref: "#/components/schemas/UpdateCart"
       responses:
         "200":
           description: Updating cart with an item
@@ -658,6 +692,13 @@ paths:
       tags:
         - Orders
       description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example: { cartId: cart-fib85 }
       responses:
         "201":
           description: Confirmation on creating an order
