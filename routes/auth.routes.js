@@ -10,6 +10,8 @@ import {
 	verifyToken,
 } from "../utils/verifier.util.js";
 
+import User from "../models/user.model.js";
+
 // Middleware Import
 import { validateRegister } from "../middlewares/auth.validator.js";
 import { validateBody } from "../middlewares/body.validator.js";
@@ -53,6 +55,14 @@ router.get("/logout", async (req, res) => {
 router.post("/register", validateBody, validateRegister, async (req, res) => {
 	const { username, password, role } = req.body;
 
+	const userExists = User.findOne({ username });
+	if (userExists) {
+		res.status(400).json({
+			success: false,
+			message: "Username already exists",
+		});
+	}
+
 	const hashedPassword = await hashPassword(password);
 
 	// Mongoose använder model/schema för att kontrollera så uppgifterna stämmer.
@@ -71,7 +81,7 @@ router.post("/register", validateBody, validateRegister, async (req, res) => {
 			message: "User created successfully",
 		});
 	} else {
-		res.status(400).json({
+		res.status(500).json({
 			success: false,
 			message: "Registration unsuccessful",
 		});
@@ -95,10 +105,7 @@ router.post("/login", validateBody, async (req, res) => {
 		const user = await getUser(username);
 
 		if (user) {
-			const correctPassword = await comparePasswords(
-				password,
-				user.password
-			);
+			const correctPassword = await comparePasswords(password, user.password);
 
 			if (correctPassword) {
 				const token = signToken({ userId: user.userId });

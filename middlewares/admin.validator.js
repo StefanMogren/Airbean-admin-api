@@ -18,7 +18,7 @@ export const verifyAdmin = async (req, res, next) => {
 
 	const user = await getUserByUserId(decodedToken.userId);
 	if (user.role !== "admin") {
-		throw new CustomError("Action not allowed as user or guest.", 403);
+		throw new CustomError("Action not allowed as user or guest.", 401);
 	}
 	next();
 };

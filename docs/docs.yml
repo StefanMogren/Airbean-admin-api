@@ -30,6 +30,12 @@ components:
       description: User ID
       example: user-g98g3
 
+    # ----- CartId -----
+    CartId:
+      type: string
+      description: User ID
+      example: cart-fib85
+
     # ----- Token -----
     Token:
       type: string
@@ -40,7 +46,19 @@ components:
     Product:
       type: object
       description: Product description
-      example: { title: Dubbel latte, desc: Bryggd på månadens böna, price: 39 }
+      properties:
+        title:
+          type: string
+          description: The name of the product
+          example: Dubbel latte
+        desc:
+          type: string
+          description: A description of the product
+          example: Bryggd på månadens böna
+        price:
+          type: number
+          description: How much the product costs
+          example: 39
 
     # ----- UpdateCart -----
     UpdateCart:
@@ -48,8 +66,66 @@ components:
       description: Update cart with product
       example: { "prodId": "prod-jespe", "qty": 5 }
 
+  # --------------- RequestBody ---------------
+  requestBody:
+    Product:
+      application/json:
+        schema:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            orders:
+              type: object
+              example:
+                {
+                  title: Dubbel latte,
+                  desc: Bryggd på månadens böna,
+                  price: 39,
+                }
+    UserLogin:
+      application/json:
+        schema:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            orders:
+              type: object
+              example: { username: coffeedrinker, password: oh39gu74wb(7 }
+    UserRegister:
+      application/json:
+        schema:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            orders:
+              type: object
+              example:
+                { username: coffeedrinker, password: oh39gu74wb(7, role: user }
+
+    UpdateCart:
+      application/json:
+        schema:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            orders:
+              type: object
+              example: { prodId: prod-jespe, qty: 5 }
+
+  # --------------- Responses ---------------
+  responses:
+    # ----- Product -----
     Cart:
       type: object
+      description: A cart with content
       example:
         {
           "cartId": "cart-d107b",
@@ -76,79 +152,40 @@ components:
         }
 
     Carts:
-      type: array
-      description: Array of carts
-      example:
-        [
-          {
-            "userId": "user-a15f8",
-            "guestId": null,
-            "items": [{ "prodId": "prod-hebes", "qty": 5 }],
-            "cartId": "cart-d2276",
-            "createdAt": "2025-06-08T11:44:02.479Z",
-            "updatedAt": "2025-06-08T11:44:02.498Z",
-          },
-          {
-            "userId": "user-9512b",
-            "guestId": null,
-            "items":
-              [
-                { "prodId": "prod-rgist", "qty": 2 },
-                { "prodId": "prod-jespe", "qty": 3 },
-              ],
-            "cartId": "cart-d107b",
-            "createdAt": "2025-06-10T11:07:47.627Z",
-            "updatedAt": "2025-06-10T11:08:13.478Z",
-          },
-        ]
-    Orders:
-      type: array
-      description: All orders by userId
-      example:
-        [
-          {
-            "_id": "68481b5bf77dc4d1c1274ed2",
-            "userId": "user-9512b",
-            "items":
-              [
-                {
-                  "prodId": "prod-jespe",
-                  "title": "Bryggkaffe",
-                  "price": 39,
-                  "qty": 5,
-                  "_id": "68481b5bf77dc4d1c1274ed3",
-                },
-              ],
-            "total": 140.4,
-            "discountsApplied":
-              [
-                "Active Discount: Buy 4 pay for 3, cheapest one is free.",
-                "Active Discount: 10% discount for registered users.",
-              ],
-            "__v": 0,
-          },
-          {
-            "_id": "68481db227220a71ac8a060d",
-            "userId": "user-9512b",
-            "items":
-              [
-                {
-                  "prodId": "prod-jespe",
-                  "title": "Bryggkaffe",
-                  "price": 39,
-                  "qty": 3,
-                  "_id": "68481db227220a71ac8a060e",
-                },
-              ],
-            "total": 105.3,
-            "discountsApplied":
-              ["Active Discount: 10% discount for registered users."],
-            "__v": 0,
-          },
-        ]
+      application/json:
+        schema:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            cart:
+              type: array
+              example:
+                [
+                  {
+                    "userId": "user-a15f8",
+                    "guestId": null,
+                    "items": [{ "prodId": "prod-hebes", "qty": 5 }],
+                    "cartId": "cart-d2276",
+                    "createdAt": "2025-06-08T11:44:02.479Z",
+                    "updatedAt": "2025-06-08T11:44:02.498Z",
+                  },
+                  {
+                    "userId": "user-9512b",
+                    "guestId": null,
+                    "items":
+                      [
+                        { "prodId": "prod-rgist", "qty": 2 },
+                        { "prodId": "prod-jespe", "qty": 3 },
+                      ],
+                    "cartId": "cart-d107b",
+                    "createdAt": "2025-06-10T11:07:47.627Z",
+                    "updatedAt": "2025-06-10T11:08:13.478Z",
+                  },
+                ]
     Order:
       type: object
-      description: A user order
       example:
         {
           "userId": "user-9512b",
@@ -172,99 +209,58 @@ components:
           "__v": 0,
         }
 
-  # --------------- Responses ---------------
-  responses:
-    BadRequestError:
-
-    # ----- MissingIdError -----
-    MissingIdError:
-      description: No userId or guestId provided
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: No userId or guestId provided
-
-    # ----- NoItemInCartError -----
-    NoItemInCartError:
-      description: No item in cart
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: Cart must contain an item before placing an order.
-
-    # ----- CartIdError -----
-    CartIdError:
-      description: CartId doesn't match any cart
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: CartId doesn't match any cart
-
-    # ----- OrderForAnotherUserError -----
-    OrderForAnotherUserError:
-      description: Can't create order for another user
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: Can't create order for another user
-
-    # ----- OrderNotLoggedInError -----
-    OrderNotLoggedInError:
-      description: User must be logged in before order can be made
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: User must be logged in before order can be made
-
-    # ----- OrderForGuestError -----
-    OrderForGuestError:
-      description: User can't create order for guest
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: User can't create order for guest
+    Orders:
+      application/json:
+        schema:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            orders:
+              type: array
+              example:
+                [
+                  {
+                    "_id": "68481b5bf77dc4d1c1274ed2",
+                    "userId": "user-9512b",
+                    "items":
+                      [
+                        {
+                          "prodId": "prod-jespe",
+                          "title": "Bryggkaffe",
+                          "price": 39,
+                          "qty": 5,
+                          "_id": "68481b5bf77dc4d1c1274ed3",
+                        },
+                      ],
+                    "total": 140.4,
+                    "discountsApplied":
+                      [
+                        "Active Discount: Buy 4 pay for 3, cheapest one is free.",
+                        "Active Discount: 10% discount for registered users.",
+                      ],
+                    "__v": 0,
+                  },
+                  {
+                    "_id": "68481db227220a71ac8a060d",
+                    "userId": "user-9512b",
+                    "items":
+                      [
+                        {
+                          "prodId": "prod-jespe",
+                          "title": "Bryggkaffe",
+                          "price": 39,
+                          "qty": 3,
+                          "_id": "68481db227220a71ac8a060e",
+                        },
+                      ],
+                    "total": 105.3,
+                    "discountsApplied":
+                      ["Active Discount: 10% discount for registered users."],
+                    "__v": 0,
+                  },
+                ]
 
     # ----- OrdersResponse -----
     OrdersResponse:
@@ -347,89 +343,13 @@ components:
                     },
                   ]
 
-    # ----- MissingBodyError -----
-    MissingBodyError:
-      description: Missing request body
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: Missing request body
-
-    # ----- ProdIdError -----
-    ProdIdError:
-      description: No item with prodId found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: No item with prodId found
-
-    # ----- TitleDescPriceError -----
-    TitleDescPriceError:
-      description: Missing body content
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: Both title, desc, and price are required
-
-    # ----- MenuItemExistsError -----
-    MenuItemExistsError:
-      description: Menu item already exists
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: Menu item already exists
-
-    # ----- TokenError -----
-    TokenError:
-      description: Invalid or expired token
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: Invalid or expired token
-
 # -------------------- Paths --------------------
 # -------------------- Paths --------------------
 # -------------------- Paths --------------------
 paths:
   # --------------- Menu ---------------
   /api/menu:
-    # ----- GET menu items -----
-    get:
+    get: # ----- GET menu items -----
       tags:
         - Menu
       description: Returns a menu of items
@@ -469,8 +389,7 @@ paths:
                     type: string
                     example: Could not find any menu
 
-    # ----- POST add new menu item -----
-    post:
+    post: # ----- POST add new menu item -----
       tags:
         - Menu
       description: Adds a new item to menu
@@ -483,8 +402,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
-            $ref: "#/components/schemas/Product"
+          $ref: "#/components/requestBody/Product"
       responses:
         "201":
           description: Confirmation on adding new item
@@ -527,10 +445,32 @@ paths:
                   value:
                     success: false
                     message: Failed to add new menu item
+                noToken:
+                  summary: No token provided
+                  value:
+                    success: false
+                    message: No token provided
+                invalidToken:
+                  summary: Invalid or expired token
+                  value:
+                    success: false
+                    message: Invalid or expired token
+        "401":
+          description: Unauthorized action
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Action not allowed as user or guest
 
   /api/menu/{prodId}:
-    # ----- PUT update menu item -----
-    put:
+    put: # ----- PUT update menu item -----
       tags:
         - Menu
       description:
@@ -548,8 +488,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
-            $ref: "#/components/schemas/Product"
+          $ref: "#/components/requestBody/Product"
       responses:
         "200":
           description: Confirmation on editing menu item
@@ -564,9 +503,59 @@ paths:
                   message:
                     type: string
                     example: Successfully edited item
+        "400":
+          description: Bad request - multiple scenarios
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
 
-    # ----- DELETE menu item -----
-    delete:
+              examples:
+                titleDescPrice:
+                  summary: Missing title, desc, or price
+                  value:
+                    success: false
+                    message: Both title, desc, and price are required
+                noMenuItem:
+                  summary: No item with prodId found
+                  value:
+                    success: false
+                    message: No item with prodId found
+                failedToAdd:
+                  summary: Failed to add menu item
+                  value:
+                    success: false
+                    message: Failed to add new menu item
+                noToken:
+                  summary: No token provided
+                  value:
+                    success: false
+                    message: No token provided
+                invalidToken:
+                  summary: Invalid or expired token
+                  value:
+                    success: false
+                    message: Invalid or expired token
+        "401":
+          description: Unauthorized action
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Action not allowed as user or guest
+
+    delete: # ----- DELETE menu item -----
       tags:
         - Menu
       description:
@@ -595,11 +584,50 @@ paths:
                   message:
                     type: string
                     example: Successfully deleted item
+          "400":
+            description: Bad request - multiple scenarios
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                    message:
+                      type: string
+                examples:
+                  noMenuItem:
+                    summary: No item with prodId found
+                    value:
+                      success: false
+                      message: No item with prodId found
+                  noToken:
+                    summary: No token provided
+                    value:
+                      success: false
+                      message: No token provided
+                  invalidToken:
+                    summary: Invalid or expired token
+                    value:
+                      success: false
+                      message: Invalid or expired token
+        "401":
+          description: Unauthorized action
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Action not allowed as user or guest
 
   # --------------- Auth ---------------
   /api/auth/logout:
-    # ----- GET logout user -----
-    get:
+    get: # ----- GET logout user -----
       tags:
         - Auth
       description:
@@ -632,17 +660,14 @@ paths:
                     example: No user to log out
 
   /api/auth/register:
-    # ----- POST register new user -----
-    post:
+    post: # ----- POST register new user -----
       tags:
         - Auth
       description:
       requestBody:
         required: true
         content:
-          application/json:
-            $ref: "#/components/schemas/UserRegister"
-
+          $ref: "#/components/requestBody/UserRegister"
       responses:
         "201":
           description: Register new user
@@ -657,18 +682,66 @@ paths:
                   message:
                     type: string
                     example: User created successfully
+        "400":
+          description: Bad request - multiple scenarios
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              examples:
+                shortPassword:
+                  summary: Too short password
+                  value:
+                    success: false
+                    message: Password must be 8 characters or longer
+                shortUsername:
+                  summary: Too short username
+                  value:
+                    success: false
+                    message: Username must be 6 characters or longer
+                missingInput:
+                  summary: Username, password, role
+                  value:
+                    success: false
+                    message: Both username, password, AND role are required
+                userAlreadyExist:
+                  summary: Username already exists
+                  value:
+                    success: false
+                    message: Username already exists
+                userOrAdmin:
+                  summary: User or admin
+                  value:
+                    success: false
+                    message: Role must be either user or admin
+        "500":
+          description: Registration unsuccessful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Registration unsuccessful
 
   /api/auth/login:
-    # ----- POST login user -----
-    post:
+    post: # ----- POST login user -----
       tags:
         - Auth
       description:
       requestBody:
         required: true
         content:
-          application/json:
-            $ref: "#/components/schemas/UserLogin"
+          $ref: "#/components/requestBody/UserLogin"
       responses:
         "200":
           description: Logging in user
@@ -684,17 +757,8 @@ paths:
                     type: string
                     example: User logged in Successfully
                     token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTk1MTJiIiwiaWF0IjoxNzQ5NTQyMDQ4LCJleHAiOjE3NDk1NDU2NDh9.DQEqXRptP3taed_4nXC-QIfSEJplreducw0Pj247cNg
-
-  # --------------- Cart ---------------
-  /api/cart:
-    # ----- GET carts -----
-    get:
-      tags:
-        - Cart
-      description:
-      responses:
-        "200":
-          description: Get all carts
+        "400":
+          description: Bad request - multiple scenarios
           content:
             application/json:
               schema:
@@ -702,20 +766,54 @@ paths:
                 properties:
                   success:
                     type: boolean
-                    example: true
-                  carts:
-                    $ref: "#/components/schemas/Carts"
+                  message:
+                    type: string
+              examples:
+                usernameOrPassword:
+                  summary: Incorrect username or pasword
+                  value:
+                    success: false
+                    message: Username and/or password are incorrect
+                alreadyLoggedIn:
+                  summary: User is already logged in
+                  value:
+                    success: false
+                    message: User is already logged in
 
-    # ----- PUT update cart -----
-    put:
+  # --------------- Cart ---------------
+  /api/cart:
+    get: # ----- GET carts -----
+      tags:
+        - Cart
+      description:
+      responses:
+        "200":
+          description: Returns all carts
+          content:
+            $ref: "#/components/responses/Carts"
+
+        "500":
+          description: Failed to fetch carts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Failed to fetch carts
+
+    put: # ----- PUT update cart -----
       tags:
         - Cart
       description:
       requestBody:
         required: true
         content:
-          application/json:
-            $ref: "#/components/schemas/UpdateCart"
+          $ref: "#/components/requestBody/UpdateCart"
       responses:
         "200":
           description: Updating cart with an item
@@ -728,11 +826,32 @@ paths:
                     type: boolean
                     example: true
                   cart:
-                    $ref: "#/components/schemas/Cart"
+                    $ref: "#/components/responses/Cart"
+        "400":
+          description: Bad request - multiple scenarios
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              examples:
+                quantityNumber:
+                  summary: Quantity must be a number
+                  value:
+                    success: false
+                    message: Quantity must be a number
+                noMenuItem:
+                  summary: No item with prodId found
+                  value:
+                    success: false
+                    message: No item with prodId found
 
   /api/cart/{cartId}:
-    # ----- GET cart by cartId -----
-    get:
+    get: # ----- GET cart by cartId -----
       tags:
         - Cart
       description:
@@ -754,21 +873,45 @@ paths:
                     type: boolean
                     example: true
                   cart:
-                    $ref: "#/components/schemas/Cart"
+                    $ref: "#/components/responses/Cart"
+        "404":
+          description: No cart with cartId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No cart found with cartId
 
   # --------------- Orders ---------------
   /api/orders:
-    # ----- GET orders -----
-    get:
+    get: # ----- GET orders -----
       tags:
         - Orders
       description:
       responses:
         "200":
           $ref: "#/components/responses/OrdersResponse"
+        "404":
+          description: No orders found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No orders found
 
-    # ----- POST create order -----
-    post:
+    post: # ----- POST create order -----
       tags:
         - Orders
       description:
@@ -794,11 +937,59 @@ paths:
                     type: string
                     example: Successfully created order
                   order:
-                    $ref: "#/components/schemas/Order"
+                    $ref: "#/components/responses/Order"
+        "400":
+          description: Bad request - multiple scenarios
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              examples:
+                cartEmpty:
+                  summary: Cart must contain item
+                  value:
+                    success: false
+                    message: Cart must contain an item before placing an order
+                invalidCartId:
+                  summary: CartId doesn't match any cart
+                  value:
+                    success: false
+                    message: CartId doesn't match any cart
+        "403":
+          description: Forbidden - multiple scenarios
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              examples:
+                userNotLoggedIn:
+                  summary: User must be logged in
+                  value:
+                    success: false
+                    message: User must be logged in before order can be made
+                orderForAnotherUser:
+                  summary: Can't create order for another user
+                  value:
+                    success: false
+                    message: Can't create order for another user
+                orderForGuest:
+                  summary: User can't create order for guest
+                  value:
+                    success: false
+                    message: User can't create order for guest
 
   /api/orders/{userId}:
-    # ----- GET orders by userId -----
-    get:
+    get: # ----- GET orders by userId -----
       tags:
         - Orders
       description:
@@ -812,6 +1003,10 @@ paths:
         "200":
           description: Get all orders by userId
           content:
+            $ref: "#/components/responses/Orders"
+        "204":
+          description: No orders found
+          content:
             application/json:
               schema:
                 type: object
@@ -819,5 +1014,19 @@ paths:
                   success:
                     type: boolean
                     example: true
-                  order:
-                    $ref: "#/components/schemas/Orders"
+                  message:
+                    type: string
+                    example: No orders found for userId
+        "400":
+          description: Invalid userId provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid userId provided

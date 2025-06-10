@@ -39,7 +39,7 @@ export const getOrdersByUserId = async (req, res) => {
 					orders: orders,
 				});
 			} else {
-				return res.json({
+				return res.status(204).json({
 					success: true,
 					message: "No orders found for userId",
 				});
@@ -182,10 +182,4 @@ export const createOrder = async (req, res) => {
 			message: "cartId doesn't match any cart",
 		});
 	}
-	/* } else {
-        return res.status(400).json({
-            success: false,
-            message: "no cartId found",
-        });
-    } */
 };

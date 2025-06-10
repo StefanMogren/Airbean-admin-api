@@ -25,7 +25,7 @@ export const getCartById = async (req, res, next) => {
 		const cart = await Cart.findOne({ cartId });
 
 		if (!cart) {
-			return next(new CustomError("Cart not found", 404));
+			return next(new CustomError("No cart found with cartId", 404));
 		}
 
 		const menuItems = await Menu.find();
@@ -80,7 +80,7 @@ export const updateCart = async (req, res, next) => {
 
 		const product = await Menu.findOne({ prodId });
 		if (!product) {
-			return next(new CustomError("Product not found in menu.", 404));
+			return next(new CustomError("No item with prodId found.", 400));
 		}
 
 		let cart;
