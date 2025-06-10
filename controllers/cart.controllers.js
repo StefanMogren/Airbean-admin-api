@@ -51,15 +51,18 @@ export const getCartById = async (req, res, next) => {
 		});
 
 		res.status(200).json({
-			cartId: cart.cartId,
-			userId: cart.userId,
-			guestId: cart.guestId,
-			items: itemsWithDetails,
-			total,
-			discountsApplied,
-			registeredUser,
-			createdAt: cart.createdAt,
-			updatedAt: cart.updatedAt,
+			success: true,
+			cart: {
+				cartId: cart.cartId,
+				userId: cart.userId,
+				guestId: cart.guestId,
+				items: itemsWithDetails,
+				total,
+				discountsApplied,
+				registeredUser,
+				createdAt: cart.createdAt,
+				updatedAt: cart.updatedAt,
+			},
 		});
 	} catch (error) {
 		next(error);
@@ -100,9 +103,7 @@ export const updateCart = async (req, res, next) => {
 			return next(new CustomError("Missing guestId.", 400));
 		}
 
-		const itemIndex = cart.items.findIndex(
-			(item) => item.prodId === prodId
-		);
+		const itemIndex = cart.items.findIndex((item) => item.prodId === prodId);
 		if (qty === 0) {
 			cart.items = cart.items.filter((item) => item.prodId !== prodId);
 		} else {
@@ -134,15 +135,18 @@ export const updateCart = async (req, res, next) => {
 		});
 
 		res.status(200).json({
-			cartId: cart.cartId,
-			userId: cart.userId,
-			guestId: cart.guestId,
-			items: itemsWithDetails,
-			total,
-			discountsApplied,
-			registeredUser,
-			createdAt: cart.createdAt,
-			updatedAt: cart.updatedAt,
+			success: true,
+			cart: {
+				cartId: cart.cartId,
+				userId: cart.userId,
+				guestId: cart.guestId,
+				items: itemsWithDetails,
+				total,
+				discountsApplied,
+				registeredUser,
+				createdAt: cart.createdAt,
+				updatedAt: cart.updatedAt,
+			},
 		});
 	} catch (error) {
 		next(error);

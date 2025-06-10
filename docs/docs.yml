@@ -24,9 +24,304 @@ components:
       description: Product description
       example: { title: Dubbel latte, desc: Bryggd på månadens böna, price: 39 }
 
+    Cart:
+      type: object
+      example:
+        {
+          "cartId": "cart-d107b",
+          "userId": "user-9512b",
+          "guestId": null,
+          "items":
+            [
+              {
+                "prodId": "prod-jespe",
+                "qty": 5,
+                "title": "Bryggkaffe",
+                "price": 39,
+              },
+            ],
+          "total": 140.4,
+          "discountsApplied":
+            [
+              "Active Discount: Buy 4 pay for 3, cheapest one is free.",
+              "Active Discount: 10% discount for registered users.",
+            ],
+          "registeredUser": true,
+          "createdAt": "2025-06-10T11:07:47.627Z",
+          "updatedAt": "2025-06-10T11:14:57.408Z",
+        }
+
+    Carts:
+      type: array
+      description: Array of carts
+      example:
+        [
+          {
+            "userId": "user-a15f8",
+            "guestId": null,
+            "items": [{ "prodId": "prod-hebes", "qty": 5 }],
+            "cartId": "cart-d2276",
+            "createdAt": "2025-06-08T11:44:02.479Z",
+            "updatedAt": "2025-06-08T11:44:02.498Z",
+          },
+          {
+            "userId": "user-9512b",
+            "guestId": null,
+            "items":
+              [
+                { "prodId": "prod-rgist", "qty": 2 },
+                { "prodId": "prod-jespe", "qty": 3 },
+              ],
+            "cartId": "cart-d107b",
+            "createdAt": "2025-06-10T11:07:47.627Z",
+            "updatedAt": "2025-06-10T11:08:13.478Z",
+          },
+        ]
+    Orders:
+      type: array
+      description: All orders by userId
+      example:
+        [
+          {
+            "_id": "68481b5bf77dc4d1c1274ed2",
+            "userId": "user-9512b",
+            "items":
+              [
+                {
+                  "prodId": "prod-jespe",
+                  "title": "Bryggkaffe",
+                  "price": 39,
+                  "qty": 5,
+                  "_id": "68481b5bf77dc4d1c1274ed3",
+                },
+              ],
+            "total": 140.4,
+            "discountsApplied":
+              [
+                "Active Discount: Buy 4 pay for 3, cheapest one is free.",
+                "Active Discount: 10% discount for registered users.",
+              ],
+            "__v": 0,
+          },
+          {
+            "_id": "68481db227220a71ac8a060d",
+            "userId": "user-9512b",
+            "items":
+              [
+                {
+                  "prodId": "prod-jespe",
+                  "title": "Bryggkaffe",
+                  "price": 39,
+                  "qty": 3,
+                  "_id": "68481db227220a71ac8a060e",
+                },
+              ],
+            "total": 105.3,
+            "discountsApplied":
+              ["Active Discount: 10% discount for registered users."],
+            "__v": 0,
+          },
+        ]
+    Order:
+      type: object
+      description: A user order
+      example:
+        {
+          "userId": "user-9512b",
+          "items":
+            [
+              {
+                "prodId": "prod-jespe",
+                "title": "Bryggkaffe",
+                "price": 39,
+                "qty": 5,
+                "_id": "68481b5bf77dc4d1c1274ed3",
+              },
+            ],
+          "total": 140.4,
+          "discountsApplied":
+            [
+              "Active Discount: Buy 4 pay for 3, cheapest one is free.",
+              "Active Discount: 10% discount for registered users.",
+            ],
+          "_id": "68481b5bf77dc4d1c1274ed2",
+          "__v": 0,
+        }
+
   # --------------- Responses ---------------
   responses:
     BadRequestError:
+
+    # ----- MissingIdError -----
+    MissingIdError:
+      description: No userId or guestId provided
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: No userId or guestId provided
+
+    # ----- NoItemInCartError -----
+    NoItemInCartError:
+      description: No item in cart
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: Cart must contain an item before placing an order.
+
+    # ----- CartIdError -----
+    CartIdError:
+      description: CartId doesn't match any cart
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: CartId doesn't match any cart
+
+    # ----- OrderForAnotherUserError -----
+    OrderForAnotherUserError:
+      description: Can't create order for another user
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: Can't create order for another user
+
+    # ----- OrderNotLoggedInError -----
+    OrderNotLoggedInError:
+      description: User must be logged in before order can be made
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: User must be logged in before order can be made
+
+    # ----- OrderForGuestError -----
+    OrderForGuestError:
+      description: User can't create order for guest
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: User can't create order for guest
+
+    # ----- OrdersResponse -----
+    OrdersResponse:
+      description: Return all orders
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              orders:
+                type: array
+                description: Array of orders
+                example:
+                  [
+                    {
+                      "_id": "6845775f260e6e4f43e8a19a",
+                      "userId": "user-a15f8",
+                      "items":
+                        [
+                          {
+                            "prodId": "prod-rgist",
+                            "title": "Cappuccino",
+                            "price": 49,
+                            "qty": 4,
+                            "_id": "6845775f260e6e4f43e8a19b",
+                          },
+                          {
+                            "prodId": "prod-hebes",
+                            "title": "Latte Macchiato",
+                            "price": 49,
+                            "qty": 2,
+                            "_id": "6845775f260e6e4f43e8a19c",
+                          },
+                        ],
+                      "total": 220.5,
+                      "discountsApplied":
+                        [
+                          "Active Discount: Buy 4 pay for 3, cheapest one is free.",
+                          "Active Discount: 10% discount for registered users.",
+                        ],
+                      "__v": 0,
+                    },
+                    {
+                      "_id": "684595be5bebcaf40e6cac16",
+                      "userId": "user-6d24a",
+                      "items":
+                        [
+                          {
+                            "prodId": "prod-hebes",
+                            "title": "Latte Macchiato",
+                            "price": 49,
+                            "qty": 6,
+                            "_id": "684595be5bebcaf40e6cac17",
+                          },
+                          {
+                            "prodId": "prod-jespe",
+                            "title": "Bryggkaffe",
+                            "price": 39,
+                            "qty": 2,
+                            "_id": "684595be5bebcaf40e6cac18",
+                          },
+                          {
+                            "prodId": "prod-22ddd",
+                            "title": "Real Grey Tea",
+                            "price": 27,
+                            "qty": 3,
+                            "_id": "684595be5bebcaf40e6cac19",
+                          },
+                        ],
+                      "total": 328.5,
+                      "discountsApplied":
+                        [
+                          "Active Discount: Buy 4 pay for 3, cheapest one is free.",
+                          "Active Discount: 10% discount for registered users.",
+                        ],
+                      "__v": 0,
+                    },
+                  ]
 
     # ----- MissingBodyError -----
     MissingBodyError:
@@ -88,6 +383,9 @@ components:
                 type: string
                 example: Invalid or expired token
 
+# -------------------- Paths --------------------
+# -------------------- Paths --------------------
+# -------------------- Paths --------------------
 paths:
   # --------------- Menu ---------------
   /api/menu:
@@ -161,78 +459,238 @@ paths:
                     example: Successfully added new menu item
 
   /api/menu/{prodId}:
+    # ----- PUT update menu item -----
     put:
       tags:
         - Menu
       description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            $ref: "#/components/schemas/Product"
       responses:
+        "200":
+          description: Confirmation on editing menu item
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Successfully edited item
 
+    # ----- DELETE menu item -----
     delete:
       tags:
         - Menu
       description:
       responses:
+        "200":
+          description: Confirmation on deleting menu item
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Successfully deleted item
 
   # --------------- Auth ---------------
   /api/auth/logout:
+    # ----- GET logout user -----
     get:
       tags:
         - Auth
       description:
       responses:
+        "200":
+          description: Logging out user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User logged out
+        "400":
+          description: No user to log out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No user to log out
 
   /api/auth/register:
+    # ----- POST register new user -----
     post:
       tags:
         - Auth
       description:
       responses:
+        "201":
+          description: Register new user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User created successfully
 
   /api/auth/login:
+    # ----- POST login user -----
     post:
       tags:
         - Auth
       description:
       responses:
+        "200":
+          description: Logging in user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User logged in Successfully
+                    token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTk1MTJiIiwiaWF0IjoxNzQ5NTQyMDQ4LCJleHAiOjE3NDk1NDU2NDh9.DQEqXRptP3taed_4nXC-QIfSEJplreducw0Pj247cNg
 
   # --------------- Cart ---------------
   /api/cart:
+    # ----- GET carts -----
     get:
       tags:
         - Cart
       description:
       responses:
+        "200":
+          description: Get all carts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  carts:
+                    $ref: "#/components/schemas/Carts"
 
+    # ----- PUT update cart -----
     put:
       tags:
         - Cart
       description:
       responses:
+        "200":
+          description: Updating cart with an item
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  cart:
+                    $ref: "#/components/schemas/Cart"
 
   /api/cart/{cartId}:
+    # ----- GET cart by cartId -----
     get:
       tags:
         - Cart
       description:
       responses:
+        "200":
+          description: Get a cart by cartId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  cart:
+                    $ref: "#/components/schemas/Cart"
 
   # --------------- Orders ---------------
   /api/orders:
+    # ----- GET orders -----
     get:
       tags:
         - Orders
       description:
       responses:
+        "200":
+          $ref: "#/components/responses/OrdersResponse"
 
+    # ----- POST create order -----
     post:
       tags:
         - Orders
       description:
       responses:
+        "201":
+          description: Confirmation on creating an order
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Successfully created order
+                  order:
+                    $ref: "#/components/schemas/Order"
 
   /api/orders/{userId}:
+    # ----- GET orders by userId -----
     get:
       tags:
         - Orders
       description:
       responses:
+        "200":
+          description: Get all orders by userId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  order:
+                    $ref: "#/components/schemas/Orders"

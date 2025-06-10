@@ -132,7 +132,7 @@ export const createOrder = async (req, res) => {
 			} else if (decodedToken) {
 				return res.status(403).json({
 					success: false,
-					message: "Can't create order for guest user",
+					message: "User can't create order for guest",
 				});
 
 				// Kontroll ifall guestId finns
